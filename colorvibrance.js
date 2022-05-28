@@ -1,39 +1,13 @@
 function colorvibrance(ctx, color="#FF8000", vibrance=1) {
-    // conversions thanks to https://stackoverflow.com/a/17243070
-    var HSVtoRGB = function(h, s, v) {
-        var r, g, b, i, f, p, q, t;
-        i = Math.floor(h * 6);
-        f = h * 6 - i;
-        p = v * (1 - s);
-        q = v * (1 - f * s);
-        t = v * (1 - (1 - f) * s);
-        switch (i % 6) {
-            case 0: r = v, g = t, b = p; break;
-            case 1: r = q, g = v, b = p; break;
-            case 2: r = p, g = v, b = t; break;
-            case 3: r = p, g = q, b = v; break;
-            case 4: r = t, g = p, b = v; break;
-            case 5: r = v, g = p, b = q; break;
-        }
-        return [
-            Math.round(r * 255),
-            Math.round(g * 255),
-            Math.round(b * 255)
-        ];
+    var HSLtoRGB = function(h, s, l) {
+        var a = s * Math.min(l, 1 - l);
+        var f = (n, k=(n+h/30)%12) => l - a*Math.max(Math.min(k-3,9-k,1), -1);
+        return [f(0), f(8), f(4)];
     }
-    var RGBtoHSV = function(r, g, b) {
-        var max = Math.max(r, g, b), min = Math.min(r, g, b),
-            d = max - min,
-            h,
-            s = (max === 0 ? 0 : d / max),
-            v = max / 255;
-        switch (max) {
-            case min: h = 0; break;
-            case r: h = (g - b) + d * (g < b ? 6: 0); h /= 6 * d; break;
-            case g: h = (b - r) + d * 2; h /= 6 * d; break;
-            case b: h = (r - g) + d * 4; h /= 6 * d; break;
-        }
-        return [h, s, v];
+    var RGBtoHSL = function(r, g, b) {
+        var v = Math.max(r,g,b), c=v-Math.min(r,g,b), f=(1-Math.abs(v+v-c-1)); 
+        var h = c && ((v==r) ? (g-b)/c : ((v==g) ? 2+(b-r)/c : 4+(r-g)/c)); 
+        return [60*(h<0?h+6:h), f ? c/f : 0, (v+v-c)/2];
     }
 
     // save original image
@@ -52,10 +26,10 @@ function colorvibrance(ctx, color="#FF8000", vibrance=1) {
     var ogdata = OGimageData.data;
     var cmapdata = colormap.data;
     for (var i = 0; i < ogdata.length; i += 4) {
-        var pixel_color = RGBtoHSV(cmapdata[i + 0], cmapdata[i + 1], cmapdata[i + 2]);
+        var pixel_color = RGBtoHSL(cmapdata[i + 0], cmapdata[i + 1], cmapdata[i + 2]);
         // set brightness (value) to be same as that of original pixel
-        pixel_color[2] = RGBtoHSV(ogdata[i + 0], ogdata[i + 1], ogdata[i + 2])[2];
-        var pixel_color_rgb = HSVtoRGB(pixel_color[0], pixel_color[1], pixel_color[2]);
+        pixel_color[2] = RGBtoHSL(ogdata[i + 0], ogdata[i + 1], ogdata[i + 2])[2];
+        var pixel_color_rgb = HSLtoRGB(pixel_color[0], pixel_color[1], pixel_color[2]);
         for (var j = 0; j < 3; j++) {
             ogdata[i + j] = pixel_color_rgb[j];
         }
