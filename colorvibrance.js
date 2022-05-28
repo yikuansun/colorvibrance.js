@@ -60,5 +60,5 @@ function colorvibrance(ctx, color="#FF8000", vibrance=1) {
             ogdata[i + j] = pixel_color_rgb[j];
         }
     }
-    ctx.putImageData(ogdata, 0, 0);
+    ctx.putImageData(OGimageData, 0, 0);
 }

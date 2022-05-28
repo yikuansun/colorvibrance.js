@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="preload" href="greylightflare.jpg" as="image" type="image/jpg" />
+    </head>
+    <body>
+        <img src="greylightflare.jpg" />
+        <canvas width="1920" height="1080" style="width: 960px;"></canvas>
+        <script src="colorvibrance.js"></script>
+        <script>
+            var canv = document.querySelector("canvas");
+            var ctx = canv.getContext("2d");
+            var img = document.querySelector("img");
+            ctx.drawImage(img, 0, 0);
+            img.style.display = "none";
+            colorvibrance(ctx, "#ff8000", 1);
+        </script>
+    </body>
+</html>
