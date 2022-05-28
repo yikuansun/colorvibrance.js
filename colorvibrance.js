@@ -4,7 +4,7 @@ colorvibrance.js - a JS library for colorizing black-background overlays
 Written by yikuansun (https://github.com/yikuansun)
 */
 
-function colorvibrance(ctx, color="#FF8000", vibrance=1) {
+function colorvibrance(ctx, color="#FF8000", vibrance=100) {
     ctx.save();
 
     var HSLtoRGB = function(h, s, l) {
@@ -19,31 +19,35 @@ function colorvibrance(ctx, color="#FF8000", vibrance=1) {
         return [60*(h<0?h+6:h), f ? c/f : 0, (v+v-c)/2];
     }
 
-    // save original image
-    var OGimageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
-
-    // use fill layers with blend modes to get color map
+    // get color map
     ctx.fillStyle = color;
     ctx.globalCompositeOperation = "color";
     ctx.fillRect(0, 0, canv.width, canv.height);
-    ctx.globalCompositeOperation = "soft-light";
-    ctx.globalAlpha = vibrance;
-    ctx.fillRect(0, 0, canv.width, canv.height);
     var colormap = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
-
-    // blend original image and color map
-    var ogdata = OGimageData.data;
+    var OGcolorData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
+    // boost vibrance
     var cmapdata = colormap.data;
+    for (var i = 0; i < cmapdata.length; i += 4) {
+        var rgb = [cmapdata[i], cmapdata[i + 1], cmapdata[i + 2]];
+        var maxchannel = rgb.indexOf(Math.max.apply(null, rgb));
+        var minchannel = rgb.indexOf(Math.min.apply(null, rgb));
+        cmapdata[i + maxchannel] += vibrance;
+        cmapdata[i + minchannel] -= vibrance;
+    }
+    
+    // blend original image and color map
+    var ogdata = OGcolorData.data;
     for (var i = 0; i < ogdata.length; i += 4) {
-        var pixel_color = RGBtoHSL(cmapdata[i + 0], cmapdata[i + 1], cmapdata[i + 2]);
-        // set luminosity to be same as that of original pixel
-        pixel_color[2] = RGBtoHSL(ogdata[i + 0], ogdata[i + 1], ogdata[i + 2])[2];
+        var pixel_color = RGBtoHSL(ogdata[i + 0], ogdata[i + 1], ogdata[i + 2]);
+        // shift hue using color map
+        pixel_color[0] = RGBtoHSL(cmapdata[i + 0], cmapdata[i + 1], cmapdata[i + 2])[0];
         var pixel_color_rgb = HSLtoRGB(pixel_color[0], pixel_color[1], pixel_color[2]);
         for (var j = 0; j < 3; j++) {
             ogdata[i + j] = pixel_color_rgb[j];
         }
     }
-    ctx.putImageData(OGimageData, 0, 0);
+    
+    ctx.putImageData(OGcolorData, 0, 0);
 
     ctx.restore();
 }
