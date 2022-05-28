@@ -27,7 +27,7 @@ function colorvibrance(ctx, color="#FF8000", vibrance=1) {
     var cmapdata = colormap.data;
     for (var i = 0; i < ogdata.length; i += 4) {
         var pixel_color = RGBtoHSL(cmapdata[i + 0], cmapdata[i + 1], cmapdata[i + 2]);
-        // set brightness (value) to be same as that of original pixel
+        // set luminosity to be same as that of original pixel
         pixel_color[2] = RGBtoHSL(ogdata[i + 0], ogdata[i + 1], ogdata[i + 2])[2];
         var pixel_color_rgb = HSLtoRGB(pixel_color[0], pixel_color[1], pixel_color[2]);
         for (var j = 0; j < 3; j++) {
