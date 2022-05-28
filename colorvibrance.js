@@ -1,3 +1,9 @@
+/*
+colorvibrance.js - a JS library for colorizing black-background overlays
+
+Written by yikuansun (https://github.com/yikuansun)
+*/
+
 function colorvibrance(ctx, color="#FF8000", vibrance=1) {
     var HSLtoRGB = function(h, s, l) {
         var a = s * Math.min(l, 1 - l);
