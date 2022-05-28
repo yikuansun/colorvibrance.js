@@ -5,6 +5,8 @@ Written by yikuansun (https://github.com/yikuansun)
 */
 
 function colorvibrance(ctx, color="#FF8000", vibrance=1) {
+    ctx.save();
+
     var HSLtoRGB = function(h, s, l) {
         var a = s * Math.min(l, 1 - l);
         var f = (n, k=(n+h/30)%12) => l - a*Math.max(Math.min(k-3,9-k,1), -1);
@@ -41,4 +43,6 @@ function colorvibrance(ctx, color="#FF8000", vibrance=1) {
         }
     }
     ctx.putImageData(OGimageData, 0, 0);
+
+    ctx.restore();
 }
