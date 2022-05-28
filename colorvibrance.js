@@ -31,8 +31,8 @@ function colorvibrance(ctx, color="#FF8000", vibrance=100) {
         var rgb = [cmapdata[i], cmapdata[i + 1], cmapdata[i + 2]];
         var maxchannel = rgb.indexOf(Math.max.apply(null, rgb));
         var minchannel = rgb.indexOf(Math.min.apply(null, rgb));
-        cmapdata[i + maxchannel] += vibrance;
-        cmapdata[i + minchannel] -= vibrance;
+        cmapdata[i + maxchannel] = Math.min(cmapdata[i + maxchannel] + vibrance, 255);
+        cmapdata[i + minchannel] = Math.max(cmapdata[i + minchannel] - vibrance, 0);
     }
     
     // blend original image and color map
