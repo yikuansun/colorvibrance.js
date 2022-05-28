@@ -10,9 +10,10 @@ function colorvibrance(ctx, color="#FF8000", vibrance=1) {
     var HSLtoRGB = function(h, s, l) {
         var a = s * Math.min(l, 1 - l);
         var f = (n, k=(n+h/30)%12) => l - a*Math.max(Math.min(k-3,9-k,1), -1);
-        return [f(0), f(8), f(4)];
+        return [f(0) * 255, f(8) * 255, f(4) * 255];
     }
     var RGBtoHSL = function(r, g, b) {
+        var r = r / 255, g = g / 255, b = b / 255;
         var v = Math.max(r,g,b), c=v-Math.min(r,g,b), f=(1-Math.abs(v+v-c-1)); 
         var h = c && ((v==r) ? (g-b)/c : ((v==g) ? 2+(b-r)/c : 4+(r-g)/c)); 
         return [60*(h<0?h+6:h), f ? c/f : 0, (v+v-c)/2];
