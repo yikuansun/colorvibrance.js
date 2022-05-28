@@ -6,14 +6,21 @@
     <body>
         <img src="greylightflare.jpg" />
         <canvas width="1920" height="1080" style="width: 960px;"></canvas>
+        <br /> Color: <input type="color" value="#0080ff" onchange="color = this.value;callFunc();" />
+        <br /> Vibrance: <input type="number" value="1" step="0.01" onchange="vibrance = parseFloat(this.value);callFunc();" />
         <script src="colorvibrance.js"></script>
         <script>
             var canv = document.querySelector("canvas");
             var ctx = canv.getContext("2d");
             var img = document.querySelector("img");
-            ctx.drawImage(img, 0, 0);
             img.style.display = "none";
-            colorvibrance(ctx, "#0080ff", 1);
+            var color = "#0080ff";
+            var vibrance = 1;
+            function callFunc() {
+                ctx.drawImage(img, 0, 0);
+                colorvibrance(ctx, color, vibrance);
+            }
+            callFunc();
         </script>
     </body>
 </html>
