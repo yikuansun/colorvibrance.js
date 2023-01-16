@@ -6,8 +6,8 @@
     <body>
         <img src="greylightflare.jpg" />
         <canvas width="1920" height="1080" style="width: 960px;"></canvas>
-        <br /> Color: <input type="color" value="#0080ff" onchange="color = this.value;callFunc();" />
-        <br /> Vibrance: <input type="number" value="100" step="1" onchange="vibrance = parseFloat(this.value);callFunc();" />
+        <br /> Hue: <input type="number" value="200" min="0" max="360" onchange="hue = parseFloat(this.value);callFunc();" />
+        <br /> Saturation: <input type="number" value="100" min="0" max="100" step="1" onchange="saturation = parseFloat(this.value);callFunc();" />
         <br /> <input type="file" accept="image/*" />
         <script src="colorvibrance.js"></script>
         <script>
@@ -15,11 +15,11 @@
             var ctx = canv.getContext("2d");
             var img = document.querySelector("img");
             img.style.display = "none";
-            var color = "#0080ff";
-            var vibrance = 100;
+            var hue = 200;
+            var saturation = 100;
             function callFunc() {
                 ctx.drawImage(img, 0, 0);
-                colorvibrance(ctx, color, vibrance);
+                colorvibrance(ctx, hue, saturation);
             }
             callFunc();
             document.querySelector("input[type=file]").addEventListener("change", function() {
